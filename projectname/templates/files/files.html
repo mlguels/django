@@ -1,1 +1,11 @@
-{{files}}
+{% extends 'files/site.html' %}
+{% block title %}
+  All files
+{% endblock %}
+{% block body %}
+  <ul>
+    {% for file in files %}
+      <li>{{ file.name }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
