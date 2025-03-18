@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse ,Http404
 from django.shortcuts import render
 
 def home(request):
@@ -12,3 +12,10 @@ data = [
 
 def files(request):
     return render(request, 'files/files.html', {'files': data})
+
+def file(request, file_id):
+    f = next((item for item in data if item['id'] == file_id), None)
+    if f is not None:
+        return render(request, 'files/file.html', {'file': f})
+    else:
+        raise Http404("file does not exist")    
