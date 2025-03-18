@@ -4,8 +4,13 @@
 {% endblock %}
 {% block body %}
   <ul>
-    {% for file in files %}
+    {% comment %} {% for file in files %}
       <li>{{ file.name }}</li>
+    {% endfor %} {% endcomment %}
+    {% for file in files %}
+      <li>
+        <a href="{% url 'file' file.id %}">{{ file.name }}</a>
+      </li>
     {% endfor %}
   </ul>
 {% endblock %}
