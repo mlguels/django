@@ -22,6 +22,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('content/files/', views.files, name='files'),
-    path('file/<int:file_id>/', views.file, name='file')
+    path('file/<int:file_id>/', views.file, name='file'),
+    path('files/edit/<int:file_id>/', views.edit, name='edit'),
+    path('files/delete/<int:file_id>/', views.delete, name='delete')
 ]
 
