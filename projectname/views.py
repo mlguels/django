@@ -1,52 +1,25 @@
-from django.http import HttpResponse ,Http404
-from django.shortcuts import render
-from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
 from .models import File
-from .forms import UploadForm
+from .serializers import FileSerializer
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+
 
 def files(request):
     f = File.objects.all()
-    return render(request, 'files/files.html', {'files': f, 'form': UploadForm})
+    serializer = FileSerializer(f, many=True)
+    return JsonResponse({'files': serializer.data})
 
 def home(request):
-    return HttpResponse('Home page!')
+    return HttpResponse("Hello there")
 
-
-def files(request):
-    data = File.objects.all()
-    return render(request, 'files/files.html', {'files': data})
-        
-def file(request, file_id):
-    f = File.objects.get(pk=file_id)
-    if f is not None:
-        return render(request, 'files/file.html', {'file': f})
-    else:
-        raise Http404("File does not exist")
-    
-def edit(request, file_id):
-    name = request.POST.get('name')
-    file_type = request.POST.get('type')
-    f = File.objects.get(pk=file_id)
-    print(name, file_type, f)
-
-    if f:
-        if name:
-            f.name = name
-        if file_type:
-            f.file_type = file_type
-        f.save()
-        return redirect(files)
-    else:
-        return redirect(files)
-
-def delete(request, file_id):
-    f = File.objects.get(pk=file_id)   
-    if f:
-        f.delete()
-    return redirect(files)
-
-def upload(request):
-    form = UploadForm(request.POST, request.FILES)
-    if form.is_valid():
-        form.save()
-    return redirect(files)
+@api_view(['GET'])
+def file(request, file_id, format=None):
+    try:
+        f = File.objects.get(pk=file_id)
+    except File.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = FileSerializer(f)
+    return JsonResponse({'file': serializer.data})
