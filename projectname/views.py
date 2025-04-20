@@ -6,7 +6,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def files(request, format=None):
     if request.method == 'GET':
         data = File.objects.all()
@@ -24,6 +29,7 @@ def home(request):
     return HttpResponse("Hello there")
 
 @api_view(['GET', 'PATCH', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def file(request, file_id, format=None):
     try:
         f = File.objects.get(pk=file_id)
