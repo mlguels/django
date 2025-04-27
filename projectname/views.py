@@ -16,12 +16,12 @@ from rest_framework.permissions import IsAuthenticated
 @permission_classes([IsAuthenticated])
 def files(request, format=None):
     if request.method == 'GET':
-        data = File.objects.all()
+        data = request.user.file_set.all()
         serializer = FileSerializer(data, many=True)
         return Response({'files': serializer.data})
     
     elif request.method == 'POST':
-        serializer = FileSerializer(data=request.data)
+        serializer = FileSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -34,7 +34,7 @@ def home(request):
 @permission_classes([IsAuthenticated])
 def file(request, file_id, format=None):
     try:
-        f = File.objects.get(pk=file_id)
+        f = request.user.file_set.get(id=file_id)
     except File.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':

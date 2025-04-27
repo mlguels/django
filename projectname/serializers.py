@@ -6,9 +6,9 @@ class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
         fields = '__all__'
-
-
-...
+    
+    def create(self, validated_data):
+        return File.objects.create(user=self.context['request'].user, **validated_data)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
